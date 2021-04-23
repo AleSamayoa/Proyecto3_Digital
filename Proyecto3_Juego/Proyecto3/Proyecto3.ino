@@ -39,11 +39,23 @@ int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};
 #define Negro 0x0000
 #define Azul   0x001F
 #define Rojo   0xF800
+#define Amarillo 0xFFE0
 //Donde se encontrarán nuestros botones para los jugadores
 const int P1UP = PD_7;
 const int P1DO= PF_4;
 const int P2UP= PA_3;
 const int P2DO= PA_4;
+
+uint8_t pex=64;
+uint8_t pey=32;
+uint8_t coorx=1;
+uint8_t coory=1;
+uint8_t newx;
+uint8_t newy;
+
+
+boolean reinicio=false;
+
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -85,10 +97,8 @@ void setup() {
   
   
   for(int x = 0; x <319; x++){
-    LCD_Bitmap(x, 52, 16, 16, tile2);
-    LCD_Bitmap(x, 68, 16, 16, tile);
-    
-    LCD_Bitmap(x, 207, 16, 16, tile);
+    LCD_Bitmap(x, 1, 16, 16, tile);
+   
     LCD_Bitmap(x, 223, 16, 16, tile);
     x += 15;
  }
@@ -98,18 +108,46 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
+
+  if(reinicio){
+    pex=random(120,125);
+    pey=random(20,30);
+    do{
+      coorx=random(-1,2);
+      }
+      while(coorx==0);
+     do{
+      coory=random(-1,2);
+      }
+      while(coory==0);
+      reinicio=false;
+    }
+  newx=pex+coorx;
+  newy=pey+coory;
+  FillRect(pex, pey, 2, 2, 0x00);
+  FillRect(newx, newy, 2, 2, Amarillo);
+  pex=newx;
+  pey=newy;
+  peupdate += perate;
   for(int x = 0; x <320-32; x++){
     delay(15);
+    
+   
     int anim2 = (x/35)%2;
- 
     
     int anim = (x/11)%8;
     
 
     int anim3 = (x/11)%4;
-    
+   
 
   }
+  
+  //LCD_Bitmap(35, 35, pex, pey, planta);
+
+  
+  
+
   for(int x = 320-32; x >0; x--){
     delay(5);
     int anim = (x/11)%8;
