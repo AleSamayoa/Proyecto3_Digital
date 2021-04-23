@@ -45,6 +45,12 @@ const int P1UP = PD_7;
 const int P1DO= PF_4;
 const int P2UP= PA_3;
 const int P2DO= PA_4;
+const int p1x=47;
+const int p1y= 110;
+const int p2x=210;
+const int p2y= 110;
+const int pa_alt=23;
+
 
 uint8_t pex=64;
 uint8_t pey=32;
@@ -53,9 +59,19 @@ uint8_t coory=1;
 uint8_t newx;
 uint8_t newy;
 
-
 boolean reinicio=false;
+boolean juego=true;
+static bool P1UP_state=false;
+static bool P1DO_state=false;
+static bool P2UP_state=false;
+static bool P2DO_state=false;
 
+
+unsigned long peupdate;
+unsigned long paupdate;
+
+const unsigned long perate=1;
+const unsigned long parate=1;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -87,10 +103,14 @@ void setup() {
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x780F);
-  
   FillRect(0, 0, 320, 240, Negro);
-  String text1 = "MAYAN BALL!";
-  LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
+  String text1 = "Bienvenidos!";
+  LCD_Print(text1, 70, 110, 2, 0xffff, Negro);
+
+  delay(1000);
+  FillRect(0, 0, 320, 240, 0x6400);
+  String text2 = "MAYAN BALL!";
+  LCD_Print(text2, 70, 110, 2, 0xffff, 0x6400);
 //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
     
   //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
@@ -102,13 +122,19 @@ void setup() {
     LCD_Bitmap(x, 223, 16, 16, tile);
     x += 15;
  }
+    pex=random(120,125);
+    pey=random(20,30);
   
 }
 //***************************************************************************************************************************************
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-
+  P1UP_state = (digitalRead(P1UP)==LOW);
+  P1DO_state = (digitalRead(P1DO)==LOW);
+  P2UP_state= (digitalRead(P2UP)==LOW);
+  P2DO_state= (digitalRead(P2DO)==LOW);
+  
   if(reinicio){
     pex=random(120,125);
     pey=random(20,30);
@@ -122,26 +148,52 @@ void loop() {
       while(coory==0);
       reinicio=false;
     }
+ 
+  //Extremos verticales
+  if (newx ==10){  //Extremo izquierdo
+    //Punto para jugador 2
+    //Se le agrega uno al puntaje de jugador 2
+    //Música?
+    //Show score
+    
+    }
+  if (newx ==246){ //Extremo derecho
+     //Punto para jugador 2
+    //Se le agrega uno al puntaje de jugador 2
+    //Música?
+    //Show score
+    }
+//Extremos horizontales 
+  if (newy== 10 || newy==230){
+    //Cambiamos de dirección
+    coory=-coory;
+    newy+=coory+coory;
+    }
+ //Jugador 1 le pegó (El de la izquierda)
+ if (newx=p1x  && newy>=p1y && newy<= p1y+ pa_alt){
+    coorx=-coorx;
+    newx+=coorx+coorx;
+  }
+ //Jugador 2 le pegó (El de la derecha)
+ if (newx=p2x  && newy>=p2y && newy<= p2y+ pa_alt){
+    coorx=-coorx;
+    newx+=coorx+coorx;
+  }
   newx=pex+coorx;
   newy=pey+coory;
-  FillRect(pex, pey, 2, 2, 0x00);
-  FillRect(newx, newy, 2, 2, Amarillo);
+  FillRect(pex, pey, 8, 8, 0x00);
+  FillRect(newx, newy, 8, 8, Amarillo);
   pex=newx;
   pey=newy;
   peupdate += perate;
   for(int x = 0; x <320-32; x++){
     delay(15);
-    
-   
+      
     int anim2 = (x/35)%2;
-    
     int anim = (x/11)%8;
-    
-
     int anim3 = (x/11)%4;
-   
 
-  }
+ }
   
   //LCD_Bitmap(35, 35, pex, pey, planta);
 
